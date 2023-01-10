@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
-function NameChangeForm() {  
+function NameChangeForm({changeName} : {changeName: (event: any) => void}) {  
     const [newFirstName, setNewFirstName] = useState<string>("");
     
-    const handleSubmit = (event: any): void => {
-      event.preventDefault();
+    //const handleSubmit = (event: any): void => {
+      //event.preventDefault();
      // newFirstName ? newFirstName : "";
-    }
+    //}
   
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={changeName}>
           <label>
             Change name:
             <input type="text" id="firstname" name="user_name" value={newFirstName}

@@ -70,31 +70,18 @@ function App() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    setUserName(newFirstName ? `${newFirstName} ${newLastName}` : "");
+    setUserName(event.target[0].value);
+    event.target[0].value = "";
   }
 
   return (
-
     <div className="App">
-    <NameChangeForm />
       <ul>
         <li>Name: {userName}</li>
         <li>Address: {getAddress()} </li>
         <li>Age: {userDob?.age}</li>
       </ul>
-      
-      <form onSubmit={handleSubmit}>
-        <label>
-          First name:
-          <input type="text" id="firstname" name="user_name" value={newFirstName}
-            onChange={(e) => setNewFirstName(e.target.value)}
-          /></label><br />
-        <label>Last name:
-          <input type="text" id="lastname" name="user_name" value={newLastName}
-            onChange={(e) => setNewLastName(e.target.value)}
-          /></label><br />
-        <button type="submit">Change name</button>
-      </form>
+      <NameChangeForm changeName={handleSubmit} />
     </div>
   );
 }
