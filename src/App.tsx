@@ -1,22 +1,16 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-
-interface IName {
-  first: string,
-  last: string,
-}
+ import NameChangeForm from './Components/NameChangeForm'
 
 interface IAdress {
   city: string,
   state: string,
   country: string,
   postcode: number,
-  street: IStreet
-}
-
-interface IStreet {
-  number: number,
-  name: string
+  street: {
+    number: number,
+    name: string
+  }
 }
 
 interface IDob {
@@ -26,73 +20,83 @@ interface IDob {
 interface IUserInfo {
   gender: string,
   email: string,
-  name: IName,
-  location: IAdress,
-  dob: IDob
-}
-
-interface IResults {
-  results: IUserInfo[]
+  name: {
+    first: string,
+    last: string,
+  },
+  location: {
+    city: string,
+  state: string,
+  country: string,
+  postcode: number,
+  street: {
+    number: number,
+    name: string
+  }
+  },
+  dob: {
+    age: number,
+  }
 }
 
 function App() {
-  const [userData, setUserData] = useState<IResults>();
-  const [userName, setUserName] = useState<IName>();
+  const [userData, setUserData] = useState<IUserInfo>();
+  const [userName, setUserName] = useState<string>();
   const [userAddress, setUserAddress] = useState<IAdress>();
   const [userDob, setUserDob] = useState<IDob>();
-  const [newFirstName,setNewFirstName] = useState<string>("");
-  const [newLastName,setNewLastName] = useState<string>("");
-
-
+  const [newFirstName, setNewFirstName] = useState<string>("");
+  const [newLastName, setNewLastName] = useState<string>("");
 
   useEffect(() => {
     const getData = async () => {
       const response = await fetch("https://randomuser.me/api/");
-      const results = await response.json();
-      setUserData(results);
+      const data = await response.json();
+      setUserData(data.results[0]);
     }
     getData();
   }, []);
 
   useEffect(() => {
-    setUserName(userData?.results[0].name)
-    setUserAddress(userData?.results[0].location)
-    setUserDob(userData?.results[0].dob)}
-  , [userData])
+    setUserName(`${userData?.name.first} ${userData?.name.last}` )
+    setUserAddress(userData?.location)
+    setUserDob(userData?.dob)
+  }
+    , [userData])
 
-  const getName = () => `${userName?.first} ${userName?.last}`;
   const getAddress = () => `${userAddress?.street.name} ${userAddress?.street.number} 
    ${userAddress?.postcode} ${userAddress?.city}
   ${userAddress?.state}
-  ${userAddress?.country}` 
+  ${userAddress?.country}`
 
-  const handleSubmit = () => {
-    setUserName({first: newFirstName ? newFirstName : "", last: newLastName ? newLastName : ""});
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    setUserName(newFirstName ? `${newFirstName} ${newLastName}` : "");
   }
 
   return (
+
     <div className="App">
+    <NameChangeForm />
       <ul>
-        <li>Name: {getName()}</li>
+        <li>Name: {userName}</li>
         <li>Address: {getAddress()} </li>
-        <li>Age: {userDob?.age}</li> 
-        <li>Gender: {userData?.results[0].gender}</li> 
-     </ul>
-     <form onSubmit={handleSubmit}>
-      <label>
-        First name:
-      <input type="text" id="firstname" name="user_name" value={newFirstName}
-          onChange={(e) => setNewFirstName(e.target.value)}
- /></label><br />
- <label>Last name: 
- <input type="text" id="lastname" name="user_name" value={newLastName}
-          onChange={(e) => setNewLastName(e.target.value)}
- /></label><br />
-      <button type="submit">Change name</button>
-     </form>
+        <li>Age: {userDob?.age}</li>
+      </ul>
+      
+      <form onSubmit={handleSubmit}>
+        <label>
+          First name:
+          <input type="text" id="firstname" name="user_name" value={newFirstName}
+            onChange={(e) => setNewFirstName(e.target.value)}
+          /></label><br />
+        <label>Last name:
+          <input type="text" id="lastname" name="user_name" value={newLastName}
+            onChange={(e) => setNewLastName(e.target.value)}
+          /></label><br />
+        <button type="submit">Change name</button>
+      </form>
     </div>
   );
 }
 
 export default App;
-
