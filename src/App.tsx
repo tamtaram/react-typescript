@@ -44,8 +44,6 @@ function App() {
   const [userName, setUserName] = useState<string>();
   const [userAddress, setUserAddress] = useState<IAdress>();
   const [userDob, setUserDob] = useState<IDob>();
-  const [newFirstName, setNewFirstName] = useState<string>("");
-  const [newLastName, setNewLastName] = useState<string>("");
 
   useEffect(() => {
     const getData = async () => {
@@ -63,12 +61,13 @@ function App() {
   }
     , [userData])
 
-  const getAddress = () => `${userAddress?.street.name} ${userAddress?.street.number} 
+  const getAddress = () => `${userAddress?.street.name} ${userAddress?.street.number}
    ${userAddress?.postcode} ${userAddress?.city}
   ${userAddress?.state}
   ${userAddress?.country}`
 
   const handleSubmit = (event: any) => {
+    console.log(event);
     event.preventDefault();
     setUserName(event.target[0].value);
     event.target[0].value = "";
@@ -76,11 +75,18 @@ function App() {
 
   return (
     <div className="App">
-      <ul>
-        <li>Name: {userName}</li>
-        <li>Address: {getAddress()} </li>
-        <li>Age: {userDob?.age}</li>
-      </ul>
+      <table>
+        <td>
+          <tr>Name:</tr>
+          <tr>Address:</tr>
+          <tr>Age:</tr>
+        </td>
+        <td>
+        <tr>{userName}</tr>
+        <tr>{getAddress()} </tr>
+        <tr>{userDob?.age}</tr>
+        </td>
+      </table>
       <NameChangeForm changeName={handleSubmit} />
     </div>
   );
